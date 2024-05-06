@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="resetStyle.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Title</title>
+</head>
+<body>
+
+<header class="header">
+    <h1 class="header__title">Блог</h1>
+    <div class="line"></div>
+</header>
+
+<main class="container">
+    <div class="blog__body">
+        <div class="body__title">
+            <h1 class="title_text">Записи</h1>
+            <hr>
+        </div>
+        <p id="elements"> </p>
+    </div>
+    <br>
+    
+
+
+    <div class="blog__form">
+        <div class="body__title">
+            <h1 class="title_text">Создать запись</h1>
+            <hr>
+        </div>
+        <form class="blogForm" name="blogForm">
+        <h3>Автор</h3>
+        <input class="input__txt" name="autorsName" type="text" size="40">
+        <h3>Заголовок</h3>
+        <input class="input__txt" name="titelName" type="text" size="40">
+        <h3>Категория</h3>
+        <input class="input__txt" name="category" type="text" size="40">
+        <h3>Содержание</h3>
+        <textarea class="many__txt" name="commentName" cols="40" rows="3"></textarea>
+        <p style="color: red" id="elements_to_error"> </p>
+        <p><input class="styled" type="button" onclick="addNewInfo()"  value="Создать"/></p>
+        </form>
+        <div class="body__title">
+            <h1 class="title_text">Архив</h1>
+            <hr>
+        </div>
+        <p id="elements_to_arch"> </p>
+    </div>
+</main>
+
+
+
+<script>
+
+    const instances = [];
+
+    class InformationBlog {
+        constructor(id, autor, title, comments, category, arhiveFlag){
+            this.id = id;
+            this.autor = autor;
+            this.title = title;
+            this.comments = comments;
+            this.category = category;
+            this.arhiveFlag = arhiveFlag;
+
+            this.displayTranslation = () =>{
+                console.log(`"id" = ${id}\n
+                autor" = ${autor}
+                \n "title" = ${title}
+                \n "comments" = ${comments}
+                  \n "category" = ${category}
+                \n "arhiveFlag" = ${arhiveFlag} `);
+            };
+            instances.push(this);
+        }
+
+
+        static GetInformationBlogRows() {
+            // instances.forEach( x => {
+            //     x.displayTranslation();
+            // });
+        }
+
+        // static GetInformationBlogRowsArhive() {
+        //     instances.forEach( x => {
+        //         if (instances[x].arhiveFlag == true) x.displayTranslation();
+        //     });
+        // }
+    }
+
+    function addNewInfo() {
+
+            new InformationBlog(instances.length+1, document.blogForm.autorsName.value,
+                document.blogForm.titelName.value, document.blogForm.commentName.value,
+                document.blogForm.category.value, 'inActive');
+            // document.getElementById("elements_to_error").innerHTML = `                       !`
+
+
+
+        getValue();
+    }
+    
+    
+
+    function getValue() {
+        resetDocuments();
+        instances.forEach(element => {
+            if(element.arhiveFlag == 'inActive') {
+                document.getElementById("elements").innerHTML += `<article class ="article__test"><h1 class = "title">${element.title}</h1>
+                        <p class="article__txt">Категория: <b> ${element.category}</b></p>
+                        <p class="article__txt">Автор: <b>${element.autor}</b></p>
+                        <p class="article__txt_many">${element.comments}</p>
+                        <div class="buttons">
+                        <input class="styled_del" type="button" onclick="deleteElementById(${element.id})"  value="Удалить"/>
+                        <input class="styled_arch" type="button" onclick="getElemsValueInfo(${element.id})"  value="Архив"/>
+                        </div>
+                        </article>`
+            }
+        });
+    }
+
+    function resetDocuments() {
+        InformationBlog.GetInformationBlogRows();
+
+        document.getElementById("elements").innerHTML = "";
+    }
+    function resetDocumentsToArc() {
+        InformationBlog.GetInformationBlogRows();
+
+        document.getElementById("elements_to_arch").innerHTML = "";
+    }
+
+    function getElemsValueInfo(id) {
+        resetDocumentsToArc();
+        console.error("id " + id);
+
+        instances.forEach(element => {
+            if(element.id == id){
+                // console.error("         id " + id + "        ");
+                element.arhiveFlag = 'inArch';
+                getValue();
+            }
+
+            if(element.arhiveFlag == 'inArch'){
+                document.getElementById("elements_to_arch").innerHTML += ` <ul type="square"> <li class="li__text"> ${element.title} </li> </ul>`
+                getValue();
+            }
+        });
+    }
+
+    function deleteElementById(id) {
+        resetDocuments();
+        console.error("id " + id);
+        instances.forEach(element => {
+            if(element.id == id){
+                // console.error("         id " + id + "        ");
+                element.arhiveFlag = 'deleted';
+                getValue();
+            }
+        });
+    }
+    </script>
+</body>
+</html>
